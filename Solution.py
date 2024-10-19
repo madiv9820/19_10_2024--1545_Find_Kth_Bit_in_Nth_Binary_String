@@ -1,33 +1,26 @@
 class Solution:
     def findKthBit(self, n: int, k: int) -> str:
         # Calculate the length of the n-th binary string
-        total_length = 2 ** n - 1
+        length = 2**n - 1
+        invert = False  # Flag to track if we need to invert the bit
 
-        def recursive_find(length, position):
-            # Base case: if the length is 1, return '0'
-            if length == 1:
-                return '0'
-            
-            # Find the position of the middle bit
-            mid_index = length // 2
-            
-            # Recursively determine the k-th bit
-            if position <= mid_index:
-                return recursive_find(mid_index, position)  # Left side
-            elif position > mid_index + 1:
-                # Right side, find the inverted bit
-                inverted_bit = recursive_find(mid_index, 1 + length - position)
-                return '0' if inverted_bit == '1' else '1'  # Invert the bit
+        # Iteratively determine the k-th bit
+        while length > 1:
+            half = length // 2  # Find the position of the middle bit
+
+            if k <= half:
+                length = half  # Move to the left half
+            elif k > half + 1:
+                k = 1 + length - k  # Reflect k for the right half
+                length = half
+                invert = not invert  # Toggle the invert flag
             else:
-                return '1'  # Middle bit is always '1'
-            
-        # Call the recursive function to find the k-th bit
-        return recursive_find(total_length, k)
+                return '1' if not invert else '0'  # Return the middle bit
 
-# Title: Efficient K-th Bit Retrieval in N-th Binary String
+        return '0' if not invert else '1'  # Return the final result based on invert flag
 
 # Time Complexity: O(log k)
-# Each recursive call reduces the problem size by half, leading to logarithmic complexity relative to k.
+# The while loop reduces the problem size by half in each iteration, leading to logarithmic complexity.
 
-# Space Complexity: O(log k)
-# The recursion stack can go as deep as log k in the worst case, leading to logarithmic space complexity.
+# Space Complexity: O(1)
+# The space used is constant, as no additional data structures are employed beyond a few variables.
