@@ -12,6 +12,16 @@
             - If k corresponds to the middle bit, return '1' or '0' based on the inversion flag.
         3. **Final Bit**: After the loop, return the final bit based on the inversion status.
 
+    - ### Time and Space Complexity
+
+        - __Time Complexity:__ ___O(log k)___
+            
+            - The while loop reduces the problem size by half in each iteration, leading to logarithmic complexity.
+
+        - __Space Complexity:__ ___O(1)___
+            
+            - The space used is constant, as no additional data structures are employed beyond a few variables.
+
     - ### Code
         ```python
         class Solution:
