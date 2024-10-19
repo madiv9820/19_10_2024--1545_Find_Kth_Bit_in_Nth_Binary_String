@@ -1,19 +1,37 @@
 class Solution:
     def findKthBit(self, n: int, k: int) -> str:
-        # Start with the initial string for n=1
-        current_String = '0'
+        # Initialize a list to store bits, with the first bit being '0'
+        bit_At_Index = [None] * k
+        bit_At_Index[0] = '0'
+
+        current_Index = 0
         
-        # Generate the string for each n from 1 to n
+        # Generate the string iteratively for n levels
         for _ in range(n):
-            # Create the inverted version of the current string, reversed and toggled
-            inverted_String = ''.join('1' if ch == '0' else '0' for ch in current_String[::-1])
-            # Form the new string by concatenating current, '1', and inverted
-            new_String = current_String + '1' + inverted_String
-            # Update current_String for the next iteration
-            current_String = new_String
+            # Stop if we've already determined the k-th bit
+            if bit_At_Index[k - 1]: 
+                break
+            
+            # Set the middle bit to '1'
+            bit_At_Index[current_Index + 1] = '1'
+            
+            next_Index = current_Index + 2
+            
+            # Invert and fill the bits from the current index to the next index
+            while current_Index >= 0 and next_Index < k:
+                # Invert the current bit and assign it to the next position
+                bit_At_Index[next_Index] = '1' if bit_At_Index[current_Index] == '0' else '0'
+                next_Index += 1
+                current_Index -= 1
 
-        # Return the k-th character (1-indexed) from the final string
-        return current_String[k - 1]
+            # Move to the next index for the next iteration
+            current_Index = next_Index - 1
 
-# Time Complexity: O(2^n), since the length of the string doubles with each iteration.
-# Space Complexity: O(2^n), due to the storage of the strings which grow exponentially.
+        # Return the k-th bit (1-indexed)
+        return bit_At_Index[k - 1]
+
+# Time Complexity: O(k)
+# The algorithm processes up to k bits in the array.
+
+# Space Complexity: O(k)
+# The space complexity is O(k) due to the storage of the bits in the bit_At_Index array.
