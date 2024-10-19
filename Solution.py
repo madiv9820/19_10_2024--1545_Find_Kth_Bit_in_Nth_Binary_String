@@ -1,37 +1,33 @@
 class Solution:
     def findKthBit(self, n: int, k: int) -> str:
-        # Initialize a list to store bits, with the first bit being '0'
-        bit_At_Index = [None] * k
-        bit_At_Index[0] = '0'
+        # Calculate the length of the n-th binary string
+        total_length = 2 ** n - 1
 
-        current_Index = 0
-        
-        # Generate the string iteratively for n levels
-        for _ in range(n):
-            # Stop if we've already determined the k-th bit
-            if bit_At_Index[k - 1]: 
-                break
+        def recursive_find(length, position):
+            # Base case: if the length is 1, return '0'
+            if length == 1:
+                return '0'
             
-            # Set the middle bit to '1'
-            bit_At_Index[current_Index + 1] = '1'
+            # Find the position of the middle bit
+            mid_index = length // 2
             
-            next_Index = current_Index + 2
+            # Recursively determine the k-th bit
+            if position <= mid_index:
+                return recursive_find(mid_index, position)  # Left side
+            elif position > mid_index + 1:
+                # Right side, find the inverted bit
+                inverted_bit = recursive_find(mid_index, 1 + length - position)
+                return '0' if inverted_bit == '1' else '1'  # Invert the bit
+            else:
+                return '1'  # Middle bit is always '1'
             
-            # Invert and fill the bits from the current index to the next index
-            while current_Index >= 0 and next_Index < k:
-                # Invert the current bit and assign it to the next position
-                bit_At_Index[next_Index] = '1' if bit_At_Index[current_Index] == '0' else '0'
-                next_Index += 1
-                current_Index -= 1
+        # Call the recursive function to find the k-th bit
+        return recursive_find(total_length, k)
 
-            # Move to the next index for the next iteration
-            current_Index = next_Index - 1
+# Title: Efficient K-th Bit Retrieval in N-th Binary String
 
-        # Return the k-th bit (1-indexed)
-        return bit_At_Index[k - 1]
+# Time Complexity: O(log k)
+# Each recursive call reduces the problem size by half, leading to logarithmic complexity relative to k.
 
-# Time Complexity: O(k)
-# The algorithm processes up to k bits in the array.
-
-# Space Complexity: O(k)
-# The space complexity is O(k) due to the storage of the bits in the bit_At_Index array.
+# Space Complexity: O(log k)
+# The recursion stack can go as deep as log k in the worst case, leading to logarithmic space complexity.
